@@ -1,0 +1,10 @@
+extends layout
+block content
+  .header
+    h1 Bootstrap to Tailwind
+  .grid
+    .bs-container
+      textarea#txtBootstrap(name="txtBootstrap", hx-post="/convert", hx-trigger="keyup changed", hx-target="#txtTailwind", hx-swap="outerHTML")
+    .separator
+    .tw-container
+      textarea#txtTailwind(name="txtTailwind")
