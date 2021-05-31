@@ -47,15 +47,36 @@ root.nodes
         if(decl.prop === 'padding') {
           const values = decl.value.split(' ');
           let output = '';
+
+          // padding: 0;
           if(values.length === 1) {
             output = prop[values[0]];
           }
+          // padding: topBottom leftRight;
           if(values.length === 2) {
-            const [leftRight, topBottom] = values;
-            output = TAILWIND_CLASSES['padding-left'][leftRight] + ' ' +
-              TAILWIND_CLASSES['padding-right'][leftRight] +  ' ' +
-              TAILWIND_CLASSES['padding-bottom'][topBottom] +  ' ' +
-              TAILWIND_CLASSES['padding-top'][topBottom];
+            const [topBottom, leftRight] = values;
+            const px = TAILWIND_CLASSES['padding-left'][leftRight] || '';
+            const py = TAILWIND_CLASSES['padding-top'][topBottom] || '';
+            output =  px.replace('l','x') + ' ' + py.replace('t','y');
+          }
+
+          // padding: top leftRight bottom;
+          if(values.length === 3) {
+            const [top, leftRight, bottom] = values;
+            const pt = TAILWIND_CLASSES['padding-top'][top] || '';
+            const px = TAILWIND_CLASSES['padding-left'][leftRight] || '';
+            const pb = TAILWIND_CLASSES['padding-bottom'][bottom] || '';
+            output =  pt + ' ' + px.replace('l','x') + ' ' + pb;
+          }
+
+          // padding: top right bottom left;
+          if(values.length === 4) {
+            const [top, right, bottom, left] = values;
+            const pt = TAILWIND_CLASSES['padding-top'][top] || '';
+            const pr = TAILWIND_CLASSES['padding-right'][right] || '';
+            const pb = TAILWIND_CLASSES['padding-bottom'][bottom] || '';
+            const pl = TAILWIND_CLASSES['padding-left'][left] || '';
+            output =  pt + ' ' + pr + ' ' + pb + ' ' + pl;
           }
 
           return output;

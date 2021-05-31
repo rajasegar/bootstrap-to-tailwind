@@ -34,12 +34,14 @@ const TAILWIND_CLASSES = {
   'padding-left': {
     0: 'pl-0',
     '0px': 'pl-0',
-    '.375rem': 'pl-1.5'
+    '.375rem': 'pl-1.5',
+    '.75rem': 'pl-3'
   },
   'padding-right': {
     0: 'pr-0',
     '0px': 'pr-0',
-    '.375rem': 'pr-1.5'
+    '.375rem': 'pr-1.5',
+    '.75rem': 'pr-3'
   },
   'padding-top': {
     0: 'pt-0',
