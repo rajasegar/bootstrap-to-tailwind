@@ -1,8 +1,10 @@
 extends layout
 block content
   .container.mx-auto
-    .bg-indigo-600.text-white.text-center
-      h1.text-2xl.py-2 Bootstrap to Tailwind
+    .bg-indigo-600.text-white.text-center.flex.justify-between
+      h1.text-2xl.py-2.mx-2 Bootstrap to Tailwind
+      .mx-2.py-3
+        a(href="https://github.com/rajasegar/bootstrap-to-tailwind") Github
     .grid.grid-cols-2.gap-2
       .bs-container
         textarea#txtBootstrap(name="txtBootstrap", hx-post="/convert", hx-trigger="keyup changed delay:500ms", hx-target="#txtTailwind", hx-swap="outerHTML",  class="w-full bg-gray-200 p-2 h-80", htmx:afterSwap="log 'hello'")
@@ -11,3 +13,9 @@ block content
 
     h2.text-2xl.text-indigo-600.font-bold.text-center.my-4 Output
     include _canvas
+    footer.bottom-0.py-2(class="w-11/12")
+      p.mx-auto.text-center.my-4
+        | Built with 
+        | <a class="text-indigo-600 hover:text-indigo-700" href="https://expressjs.com">Express.js</a>, 
+        | <a class="text-indigo-600 hover:text-indigo-700" href="https://tailwindcss.com">Tailwind CSS</a> and 
+        | <a class="text-indigo-600 hover:text-indigo-700" href="https://htmx.org">htmx</a>. 
