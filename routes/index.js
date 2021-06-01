@@ -5,7 +5,8 @@ const pug = require('pug');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Bootstrap to Tailwind', code: '' });
+  const code = `<button type="button" class="inline-block font-normal leading-normal  text-center no-underline align-middle cursor-pointer   select-none bg-transparent  px-3 py-1.5 text-base rounded text-white bg-blue-600 border-blue-500 hover:bg-blue-700">Primary Button</button>`;
+  res.render('index', { title: 'Bootstrap to Tailwind', code });
 });
 
 const bsMappings = require('../data/bs-mappings.json');
