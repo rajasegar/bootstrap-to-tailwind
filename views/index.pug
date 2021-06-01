@@ -1,10 +1,13 @@
 extends layout
 block content
-  .header
-    h1 Bootstrap to Tailwind
-  .grid
-    .bs-container
-      textarea#txtBootstrap(name="txtBootstrap", hx-post="/convert", hx-trigger="keyup changed", hx-target="#txtTailwind", hx-swap="outerHTML")
-    .separator
-    .tw-container
-      textarea#txtTailwind(name="txtTailwind")
+  .container.mx-auto
+    .bg-indigo-600.text-white.text-center
+      h1.text-2xl.py-2 Bootstrap to Tailwind
+    .grid.grid-cols-2.gap-2
+      .bs-container
+        textarea#txtBootstrap(name="txtBootstrap", hx-post="/convert", hx-trigger="keyup changed delay:500ms", hx-target="#txtTailwind", hx-swap="outerHTML",  class="w-full bg-gray-200 p-2 h-80", htmx:afterSwap="log 'hello'")
+      .tw-container
+        include _txtTailwind
+
+    h2.text-2xl.text-indigo-600.font-bold.text-center.my-4 Output
+    include _canvas

@@ -30,30 +30,35 @@ const TAILWIND_CLASSES = {
     '1px': 'p-px',
     '.125rem': 'p-0.5',
     '.25rem': 'p-1',
+    '1rem': 'p-4',
   },
   'padding-left': {
     0: 'pl-0',
     '0px': 'pl-0',
     '.375rem': 'pl-1.5',
-    '.75rem': 'pl-3'
+    '.75rem': 'pl-3',
+    '1rem': 'pl-4',
   },
   'padding-right': {
     0: 'pr-0',
     '0px': 'pr-0',
     '.375rem': 'pr-1.5',
-    '.75rem': 'pr-3'
+    '.75rem': 'pr-3',
+    '1rem': 'pr-4',
   },
   'padding-top': {
     0: 'pt-0',
     '0px': 'pt-0',
     '.375rem': 'pt-1.5',
-    '.75rem': 'pt-3'
+    '.75rem': 'pt-3',
+    '1rem': 'pt-4',
   },
   'padding-bottom': {
     0: 'pb-0',
     '0px': 'pb-0',
     '.375rem': 'pb-1.5',
-    '.75rem': 'pb-3'
+    '.75rem': 'pb-3',
+    '1rem': 'pb-4',
   },
   overflow: {
     auto: 'overflow-auto',
@@ -188,7 +193,37 @@ const TAILWIND_CLASSES = {
     'pre-line': 'whitespace-pre-line',
     'pre-wrap': 'whitespace-pre-wrap',
   },
-  margin: {},
+  margin: {
+    0: 'm-0',
+    '0px': 'm-0',
+    '1px': 'm-px',
+    '.125rem': 'm-0.5',
+    '.25rem': 'm-1',
+  },
+  'margin-left': {
+    0: 'ml-0',
+    '0px': 'ml-0',
+    '.375rem': 'ml-1.5',
+    '.75rem': 'ml-3',
+  },
+  'margin-right': {
+    0: 'mr-0',
+    '0px': 'mr-0',
+    '.375rem': 'mr-1.5',
+    '.75rem': 'mr-3',
+  },
+  'margin-top': {
+    0: 'mt-0',
+    '0px': 'mt-0',
+    '.375rem': 'mt-1.5',
+    '.75rem': 'mt-3',
+  },
+  'margin-bottom': {
+    0: 'mb-0',
+    '0px': 'mb-0',
+    '.375rem': 'mb-1.5',
+    '.75rem': 'mb-3',
+  },
   'overscroll-behavior': {
     auto: 'overscroll-auto',
     contain: 'overscroll-contain',
@@ -380,6 +415,11 @@ const TAILWIND_CLASSES = {
   color: {
     transparent: 'text-transparent',
     currentColor: 'text-current',
+    '#fff': 'text-white',
+    '#ffffff': 'text-white',
+    '#FFF': 'text-white',
+    '#FFFFFF': 'text-white',
+    white: 'text-white',
   },
   'text-transform': {
     uppercase: 'uppercase',
@@ -448,7 +488,7 @@ const TAILWIND_CLASSES = {
     none: 'bg-none',
   },
   'border-radius': {
-    '0': 'rounded-none',
+    0: 'rounded-none',
     '0px': 'rounded-none',
     '.125rem': 'rounded-sm',
     '.25rem': 'rounded',
@@ -637,6 +677,21 @@ const TAILWIND_CLASSES = {
     '0px': 'right-0',
     '50%': 'right-1/2',
     '100%': 'right-full',
+  },
+  'font-size': {
+    '.75rem': 'text-xs',
+    '.875rem': 'text-sm',
+    '1rem': 'text-base',
+    '1.125rem': 'text-lg',
+    '1.25rem': 'text-xl',
+    '1.5rem': 'text-2xl',
+    '1.875rem': 'text-3xl',
+    '2.25rem': 'text-4xl',
+    '3rem': 'text-5xl',
+    '3.75rem': 'text-6xl',
+    '4.5rem': 'text-7xl',
+    '6rem': 'text-8xl',
+    '8rem': 'text-9xl',
   },
 };
 

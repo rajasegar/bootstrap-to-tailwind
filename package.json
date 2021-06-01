@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "build:css": "postcss src/css/app.css -o public/stylesheets/styles.css"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -13,11 +14,20 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "parsel-js": "^1.0.2",
-    "postcss": "^8.3.0",
     "posthtml": "^0.15.2",
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "autoprefixer": "^10.2.6",
+    "cssnano": "^5.0.5",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "nodemon": "^2.0.7",
+    "postcss": "^8.3.0",
+    "postcss-cli": "^8.3.1",
+    "prettier": "^2.3.0",
+    "tailwindcss": "^2.1.2"
   }
 }
