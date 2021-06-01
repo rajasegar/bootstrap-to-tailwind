@@ -6,3 +6,13 @@ html
   body
     block content
     script(src="https://unpkg.com/htmx.org@1.4.0")
+    script.
+      const copyBtn = document.getElementById('copy-btn');
+      copyBtn.addEventListener('click', (ev) => {
+        document.getElementById('txtTailwind').select();
+        document.execCommand('copy');
+        ev.target.setAttribute('disabled','disabled');
+        setTimeout(() => {
+          ev.target.removeAttribute('disabled');
+        }, 2000);
+      });
