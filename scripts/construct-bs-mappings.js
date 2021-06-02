@@ -4,7 +4,7 @@ const postcss = require('postcss');
 const fs = require('fs');
 const parsel = require('parsel-js');
 
-const { TAILWIND_CLASSES } = require('../data/tailwind-utilities');
+const { TAILWIND_CLASSES } = require('tailwind-mappings');
 
 // different selector types based on parsel
 const tailwindMappings = {
@@ -16,13 +16,15 @@ const tailwindMappings = {
 
 const buttonClasses = {
   '.btn-primary': 'text-white bg-blue-600 border-blue-500 hover:bg-blue-700',
-  '.btn-secondary': 'text-white bg-gray-500 border-gray-500',
-  '.btn-success': 'text-white bg-green-500 border-green-500',
-  '.btn-danger': 'text-white bg-red-500 border-red-500',
-  '.btn-warning': 'text-white bg-yellow-500 border-yellow-500',
-  '.btn-info': 'text-white bg-indigo-400 border-indigo-400',
-  '.btn-light': 'text-black bg-gray-100 border-gray-100',
-  '.btn-dark': 'text-white bg-gray-900 border-gray-900',
+  '.btn-secondary':
+    'text-white bg-gray-500 border-gray-500 hover:bg-indigo-600',
+  '.btn-success': 'text-white bg-green-500 border-green-500 hover:bg-green-600',
+  '.btn-danger': 'text-white bg-red-500 border-red-500 hover:bg-red-600',
+  '.btn-warning':
+    'text-white bg-yellow-500 border-yellow-500 hover:bg-yellow-600',
+  '.btn-info': 'text-white bg-indigo-400 border-indigo-400 hover:bg-indigo-500',
+  '.btn-light': 'text-black bg-gray-100 border-gray-100 hover:bg-gray-200',
+  '.btn-dark': 'text-white bg-gray-800 border-gray-800 hover:bg-gray-900',
 };
 
 const alertClasses = {
@@ -47,88 +49,157 @@ const bgClasses = {
   '.bg-dark': 'bg-gray-900',
 };
 
+const bsFontSizes = {
+  '0.75em': 'text-xs',
+  '0.875em': 'text-sm',
+  '1em': 'text-base',
+  '1.125em': 'text-lg',
+  '1.25em': 'text-xl',
+  '1.5em': 'text-2xl',
+  '1.875em': 'text-3xl',
+  '2.25em': 'text-4xl',
+  '3em': 'text-5xl',
+  '3.75em': 'text-6xl',
+  '4.5em': 'text-7xl',
+  '6em': 'text-8xl',
+  '8em': 'text-9xl',
+};
+
+// override for tailwind fontsizes to work with em values
+TAILWIND_CLASSES['font-size'] = {
+  ...TAILWIND_CLASSES['font-size'],
+  ...bsFontSizes,
+};
+
 function getSelectorType(selector) {
   const ast = parsel.parse(selector);
   return ast.type;
 }
 
-function getPaddingUtils(decl) {
+function removeUnits(value) {
+  return value.replace('rem', '').replace('em', '').replace('px', '');
+}
+
+// Get the nearest matching Tailwind value
+function getProximateKey(valueHash, value) {
+  const values = Object.keys(valueHash).map((v) => removeUnits(v));
+
+  const _value = removeUnits(value);
+
+  let distance = Math.abs(values[0] - _value);
+  let idx = 0;
+  for (let c = 1; c < values.length; c++) {
+    const cdistance = Math.abs(values[c] - _value);
+    if (cdistance < distance) {
+      idx = c;
+      distance = cdistance;
+    }
+  }
+  return `${values[idx]}rem`;
+}
+
+const spacingProps = {
+  margin: {
+    top: 'margin-top',
+    right: 'margin-right',
+    bottom: 'margin-bottom',
+    left: 'margin-left',
+  },
+  padding: {
+    top: 'padding-top',
+    right: 'padding-right',
+    bottom: 'padding-bottom',
+    left: 'padding-left',
+  },
+};
+
+function getSpacingUtils(decl, propName) {
   const values = decl.value.split(' ');
   let output = '';
 
   // padding: 0;
   if (values.length === 1) {
-    output = TAILWIND_CLASSES[decl.prop][values[0]];
+    const hash = TAILWIND_CLASSES[decl.prop];
+    const proximateKey = getProximateKey(hash, values[0]);
+    output = hash[values[0]] || hash[proximateKey] || '';
   }
   // padding: topBottom leftRight;
   if (values.length === 2) {
     const [topBottom, leftRight] = values;
-    const px = TAILWIND_CLASSES['padding-left'][leftRight] || '';
-    const py = TAILWIND_CLASSES['padding-top'][topBottom] || '';
+
+    const leftProp = spacingProps[propName].left;
+    const topProp = spacingProps[propName].top;
+
+    const plHash = TAILWIND_CLASSES[leftProp];
+    const ptHash = TAILWIND_CLASSES[topProp];
+
+    const leftRightProximateKey = getProximateKey(plHash, leftRight);
+    const topBottomProximateKey = getProximateKey(ptHash, topBottom);
+
+    const px = plHash[leftRight] || plHash[leftRightProximateKey] || '';
+    const py = ptHash[topBottom] || ptHash[topBottomProximateKey] || '';
     output = px.replace('l', 'x') + ' ' + py.replace('t', 'y');
   }
 
   // padding: top leftRight bottom;
   if (values.length === 3) {
     const [top, leftRight, bottom] = values;
-    const pt = TAILWIND_CLASSES['padding-top'][top] || '';
-    const px = TAILWIND_CLASSES['padding-left'][leftRight] || '';
-    const pb = TAILWIND_CLASSES['padding-bottom'][bottom] || '';
+
+    const leftProp = spacingProps[propName].left;
+    const topProp = spacingProps[propName].top;
+    const bottomProp = spacingProps[propName].bottom;
+
+    const ptHash = TAILWIND_CLASSES[topProp];
+    const plHash = TAILWIND_CLASSES[leftProp];
+    const pbHash = TAILWIND_CLASSES[bottomProp];
+
+    const topProximatekey = getProximateKey(ptHash, top);
+    const leftProximatekey = getProximateKey(plHash, leftRight);
+    const bottomProximatekey = getProximateKey(ptHash, bottom);
+
+    const pt = ptHash[top] || ptHash[topProximatekey] || '';
+    const px = plHash[leftRight] || plHash[leftProximatekey] || '';
+    const pb = pbHash[bottom] || pbHash[bottomProximatekey] || '';
     output = pt + ' ' + px.replace('l', 'x') + ' ' + pb;
   }
 
   // padding: top right bottom left;
   if (values.length === 4) {
     const [top, right, bottom, left] = values;
-    const pt = TAILWIND_CLASSES['padding-top'][top] || '';
-    const pr = TAILWIND_CLASSES['padding-right'][right] || '';
-    const pb = TAILWIND_CLASSES['padding-bottom'][bottom] || '';
-    const pl = TAILWIND_CLASSES['padding-left'][left] || '';
+
+    const leftProp = spacingProps[propName].left;
+    const rightProp = spacingProps[propName].right;
+    const topProp = spacingProps[propName].top;
+    const bottomProp = spacingProps[propName].bottom;
+
+    const ptHash = TAILWIND_CLASSES[topProp];
+    const plHash = TAILWIND_CLASSES[leftProp];
+    const prHash = TAILWIND_CLASSES[rightProp];
+    const pbHash = TAILWIND_CLASSES[bottomProp];
+
+    const topProximatekey = getProximateKey(ptHash, top);
+    const leftProximatekey = getProximateKey(plHash, left);
+    const rightProximatekey = getProximateKey(prHash, right);
+    const bottomProximatekey = getProximateKey(ptHash, bottom);
+
+    const pt = ptHash[top] || ptHash[topProximatekey] || '';
+    const pl = plHash[left] || plHash[leftProximatekey] || '';
+    const pr = prHash[right] || prHash[rightProximatekey] || '';
+    const pb = pbHash[bottom] || pbHash[bottomProximatekey] || '';
+
     output = pt + ' ' + pr + ' ' + pb + ' ' + pl;
   }
 
   return output;
 }
 
-function getMarginUtils(decl) {
-  const values = decl.value.split(' ');
-  let output = '';
-
-  // margin: 0;
-  if (values.length === 1) {
-    output = TAILWIND_CLASSES[decl.prop][values[0]];
-  }
-  // margin: topBottom leftRight;
-  if (values.length === 2) {
-    const [topBottom, leftRight] = values;
-    const mx = TAILWIND_CLASSES['margin-left'][leftRight] || '';
-    const my = TAILWIND_CLASSES['margin-top'][topBottom] || '';
-    output = mx.replace('l', 'x') + ' ' + my.replace('t', 'y');
-  }
-
-  // margin: top leftRight bottom;
-  if (values.length === 3) {
-    const [top, leftRight, bottom] = values;
-    const mt = TAILWIND_CLASSES['margin-top'][top] || '';
-    const mx = TAILWIND_CLASSES['margin-left'][leftRight] || '';
-    const mb = TAILWIND_CLASSES['margin-bottom'][bottom] || '';
-    output = mt + ' ' + mx.replace('l', 'x') + ' ' + mb;
-  }
-
-  // margin: top right bottom left;
-  if (values.length === 4) {
-    const [top, right, bottom, left] = values;
-    const mt = TAILWIND_CLASSES['margin-top'][top] || '';
-    const mr = TAILWIND_CLASSES['margin-right'][right] || '';
-    const mb = TAILWIND_CLASSES['margin-bottom'][bottom] || '';
-    const ml = TAILWIND_CLASSES['margin-left'][left] || '';
-    output = mt + ' ' + mr + ' ' + mb + ' ' + ml;
-  }
-
-  return output;
+function getBorderRadiusUtils(decl) {
+  const hash = TAILWIND_CLASSES['border-radius'];
+  const proximateKey = getProximateKey(hash, decl.value);
+  return hash[proximateKey];
 }
 
-const fileName = 'bootstrap/v5/bootstrap.min.css';
+const fileName = 'bootstrap/v5/bootstrap.css';
 const root = postcss.parse(fs.readFileSync(fileName));
 
 root.nodes
@@ -138,16 +209,20 @@ root.nodes
 
     // Get the list of Tailwind classes
     const tw = declarations
+      .filter((decl) => !decl.variable)
       .map((decl) => {
         const prop = TAILWIND_CLASSES[decl.prop];
         if (decl.prop === 'padding') {
-          return getPaddingUtils(decl);
+          return getSpacingUtils(decl, 'padding');
         } else if (decl.prop === 'margin') {
-          return getMarginUtils(decl);
+          return getSpacingUtils(decl, 'margin');
+        } else if (decl.prop === 'border-radius') {
+          return getBorderRadiusUtils(decl);
         } else {
           // remove !important from values
-          const val = decl.value.replace(' !important', '');
+          let val = decl.value.replace(' !important', '');
           //console.log(val);
+
           return prop ? prop[val] : '';
         }
       })

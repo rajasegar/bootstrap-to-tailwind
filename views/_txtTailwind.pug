@@ -5,4 +5,6 @@ textarea#txtTailwind.w-full.bg-gray-200.p-2.h-80(name="txtTailwind")
   .absolute.bottom-4.right-4
     button#copy-btn.bg-indigo-600.text-white.px-2.py-1.rounded(
       class="hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed" 
-      type="button") Copy
+      type="button"
+        _="on click set { disabled: true } on me call #txtTailwind.select() then call document.execCommand('copy') wait 2s then set { disabled: false } on me"
+      ) Copy

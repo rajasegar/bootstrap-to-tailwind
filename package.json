@@ -16,7 +16,8 @@
     "morgan": "~1.9.1",
     "parsel-js": "^1.0.2",
     "posthtml": "^0.15.2",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "tailwind-mappings": "^1.0.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.6",
