@@ -8,6 +8,7 @@ const {
   TAILWIND_CLASSES,
   getSpacingUtils,
   getBorderRadiusUtils,
+  getBorderUtils,
 } = require('tailwind-mappings');
 
 // different selector types based on parsel
@@ -83,6 +84,19 @@ function getSelectorType(selector) {
 const fileName = 'bootstrap/v5/bootstrap.css';
 const root = postcss.parse(fs.readFileSync(fileName));
 
+const spacingProps = [
+  'margin',
+  'margin-left',
+  'margin-right',
+  'margin-top',
+  'margin-bottom',
+  'padding',
+  'padding-bottom',
+  'padding-top',
+  'padding-left',
+  'padding-right',
+];
+
 root.nodes
   .filter((node) => node.type === 'rule')
   .forEach((node) => {
@@ -93,10 +107,14 @@ root.nodes
       .filter((decl) => !decl.variable)
       .map((decl) => {
         const prop = TAILWIND_CLASSES[decl.prop];
-        if (decl.prop === 'padding') {
-          return getSpacingUtils(decl, 'padding');
-        } else if (decl.prop === 'margin') {
-          return getSpacingUtils(decl, 'margin');
+        if (
+          spacingProps.includes(decl.prop) &&
+          !decl.value.includes('var') &&
+          !decl.value.includes('calc')
+        ) {
+          return getSpacingUtils(decl, decl.prop);
+        } else if (decl.prop === 'border') {
+          return getBorderUtils(decl);
         } else if (decl.prop === 'border-radius') {
           return getBorderRadiusUtils(decl);
         } else {
@@ -104,7 +122,7 @@ root.nodes
           let val = decl.value.replace(' !important', '');
           //console.log(val);
 
-          return prop ? prop[val] : '';
+          return prop ? prop[val] || '' : '';
         }
       })
       .join(' ');
