@@ -9,6 +9,8 @@ const {
   getSpacingUtils,
   getBorderRadiusUtils,
   getBorderUtils,
+  getColorUtils,
+  getTailwindUtils,
 } = require('tailwind-mappings');
 
 // different selector types based on parsel
@@ -106,24 +108,10 @@ root.nodes
     const tw = declarations
       .filter((decl) => !decl.variable)
       .map((decl) => {
-        const prop = TAILWIND_CLASSES[decl.prop];
-        if (
-          spacingProps.includes(decl.prop) &&
-          !decl.value.includes('var') &&
-          !decl.value.includes('calc')
-        ) {
-          return getSpacingUtils(decl, decl.prop);
-        } else if (decl.prop === 'border') {
-          return getBorderUtils(decl);
-        } else if (decl.prop === 'border-radius') {
-          return getBorderRadiusUtils(decl);
-        } else {
-          // remove !important from values
-          let val = decl.value.replace(' !important', '');
-          //console.log(val);
-
-          return prop ? prop[val] || '' : '';
-        }
+        debugger;
+        console.log(decl.prop, decl.value);
+        console.log(getTailwindUtils(decl));
+        return getTailwindUtils(decl);
       })
       .join(' ');
 
