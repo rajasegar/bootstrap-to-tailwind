@@ -21,41 +21,6 @@ const tailwindMappings = {
   compounds: {},
 };
 
-const buttonClasses = {
-  '.btn-primary': 'text-white bg-blue-600 border-blue-500 hover:bg-blue-700',
-  '.btn-secondary':
-    'text-white bg-gray-500 border-gray-500 hover:bg-indigo-600',
-  '.btn-success': 'text-white bg-green-500 border-green-500 hover:bg-green-600',
-  '.btn-danger': 'text-white bg-red-500 border-red-500 hover:bg-red-600',
-  '.btn-warning':
-    'text-white bg-yellow-500 border-yellow-500 hover:bg-yellow-600',
-  '.btn-info': 'text-white bg-indigo-400 border-indigo-400 hover:bg-indigo-500',
-  '.btn-light': 'text-black bg-gray-100 border-gray-100 hover:bg-gray-200',
-  '.btn-dark': 'text-white bg-gray-800 border-gray-800 hover:bg-gray-900',
-};
-
-const alertClasses = {
-  '.alert-primary': 'text-blue-800 bg-blue-100 border-blue-200',
-  '.alert-secondary': 'text-gray-800 bg-gray-100 border-gray-200',
-  '.alert-success': 'text-green-800 bg-green-100 border-green-200',
-  '.alert-danger': 'text-red-800 bg-red-100 border-red-200',
-  '.alert-warning': 'text-yellow-800 bg-yellow-100 border-yellow-200',
-  '.alert-info': 'text-indigo-800 bg-indigo-100 border-indigo-200',
-  '.alert-light': 'text-gray-800 bg-gray-100 border-gray-200',
-  '.alert-dark': 'text-black bg-gray-400 border-gray-500',
-};
-
-const bgClasses = {
-  '.bg-primary': 'bg-blue-600',
-  '.bg-secondary': 'bg-gray-600',
-  '.bg-danger': 'bg-red-600',
-  '.bg-warning': 'bg-yellow-600',
-  '.bg-success': 'bg-green-600',
-  '.bg-info': 'bg-indigo-600',
-  '.bg-light': 'bg-gray-100',
-  '.bg-dark': 'bg-gray-900',
-};
-
 const bsFontSizes = {
   '0.75em': 'text-xs',
   '0.875em': 'text-sm',
@@ -108,10 +73,11 @@ root.nodes
     const tw = declarations
       .filter((decl) => !decl.variable)
       .map((decl) => {
-        debugger;
-        console.log(decl.prop, decl.value);
-        console.log(getTailwindUtils(decl));
-        return getTailwindUtils(decl);
+        if (decl.prop === 'border-color' && decl.value.split(' ').length > 1) {
+          return '';
+        } else {
+          return getTailwindUtils(decl);
+        }
       })
       .join(' ');
 
@@ -128,8 +94,12 @@ root.nodes
         tailwindMappings.combinators[node.selector] = tw.trimStart().trimEnd();
       } else {
         // remove new line chars from selectors
-        const _selector = node.selector.replace('\n', '');
-        tailwindMappings.compounds[_selector] = tw.trimStart().trimEnd();
+        const _selector = node.selector.replace(/\n/g, '');
+        const selectors = _selector.split(',');
+        const _tw = tw.trimStart().trimEnd();
+        selectors.forEach((s) => {
+          tailwindMappings.compounds[s.trimStart()] = _tw;
+        });
       }
     } else {
       // log the class name and file name
@@ -143,12 +113,19 @@ root.nodes
     }
   });
 
-tailwindMappings.classes = {
-  ...tailwindMappings.classes,
-  ...buttonClasses,
-  ...alertClasses,
-  ...bgClasses,
-};
+// Copy hover classes to class mappings
+Object.keys(tailwindMappings.compounds)
+  .filter((compound) => compound.includes(':hover'))
+  .forEach((compound) => {
+    const className = compound.replace(':hover', '');
+    const utils = tailwindMappings.compounds[compound];
+    const hoverUtils = utils.split(' ').map((util) => `hover:${util}`);
+    const classMapping = tailwindMappings.classes[className];
+    if (classMapping) {
+      const newMapping = [...classMapping.split(' '), ...hoverUtils];
+      tailwindMappings.classes[className] = newMapping.join(' ');
+    }
+  });
 
 const emptyValues = Object.keys(tailwindMappings.classes).filter(
   (k) => !tailwindMappings.classes[k]

@@ -19,7 +19,7 @@ specifiers:
   posthtml: ^0.15.2
   prettier: ^2.3.0
   pug: 2.0.0-beta11
-  tailwind-mappings: ^1.4.5
+  tailwind-mappings: ^1.5.2
   tailwindcss: ^2.1.2
 
 dependencies:
@@ -31,7 +31,7 @@ dependencies:
   parsel-js: 1.0.2
   posthtml: 0.15.2
   pug: 2.0.0-beta11
-  tailwind-mappings: 1.4.5_6daa0ece57b4377652e73c9c66c3b94c
+  tailwind-mappings: 1.5.2_6daa0ece57b4377652e73c9c66c3b94c
 
 devDependencies:
   autoprefixer: 10.2.6_postcss@8.3.0
@@ -3134,8 +3134,8 @@ packages:
       strip-ansi: 6.0.0
     dev: true
 
-  /tailwind-mappings/1.4.5_6daa0ece57b4377652e73c9c66c3b94c:
-    resolution: {integrity: sha512-UqoTSPidMpBOjhuw8ZSAvrSWeGAzwNYTSW/Y1qtJhS5OAaCJnIzWN7iYOCFUhmdcIn5z5Pksmxv0MmdmAUGE0w==}
+  /tailwind-mappings/1.5.2_6daa0ece57b4377652e73c9c66c3b94c:
+    resolution: {integrity: sha512-MInUilH5/D3bPoVUPqarFa6ue7L2lS8/M7fdr8KnxUvY/rILu8ITdUxN8yz8AeN6ltUhXgEG+/PIrYb8lPHZDg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       chroma-js: 2.1.2

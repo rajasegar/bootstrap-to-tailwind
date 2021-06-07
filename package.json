@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "build:css": "postcss src/css/app.css -o public/stylesheets/styles.css",
-    "deploy": "gcloud app deploy"
+    "deploy": "gcloud app deploy",
+    "debug": "node --inspect-brk scripts/construct-bs-mappings.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -17,7 +18,7 @@
     "parsel-js": "^1.0.2",
     "posthtml": "^0.15.2",
     "pug": "2.0.0-beta11",
-    "tailwind-mappings": "^1.4.5"
+    "tailwind-mappings": "^1.5.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.6",
